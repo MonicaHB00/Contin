@@ -29,7 +29,7 @@ if (requireNamespace("thematic"))
 ### Carga de Archivos 
 ```{r}
 Female.Aggregate <- read.csv("~/GitHub/Contin/Tarea 1/RP-2000 - Female Aggregate - Combined Healthy.csv")
-Male_Aggregate <- read.csv("~/GitHub/Contin/Tarea 1/RP-2000 - Male Aggregate - Combined Healthy.csv")
+Male_Aggregate <- read.csv("C:/Users/moni1/Dropbox/Mi PC (LAPTOP-2AN4DJNH)/Downloads/Export (2).csv")
 
 ```
 # Funcion que crea kpx
@@ -59,14 +59,35 @@ ex <- function(x, qx, w) {
 }
 ```
 
+#Creacion de las funciones de sibrevivencia 
 
+```{r}
+tablaSobrevivencia <- function(x, qx, w) {
+  cantidadA <- (w - x)
+  tablaSobrevivencia <- data.frame()
+  
+  for (i in 1:cantidadA) {
+    prob <- kpx(x, x + i, qx, w)
+    nueva_fila <- data.frame(i, prob)
+    tablaSobrevivencia <- rbind(tablaSobrevivencia, nueva_fila)
+  }
+
+  return(tablaSobrevivencia)
+}
+
+```
 
 
 # Pruebas
 ```{r}
- 
-ex(20,Female.Aggregate,120)
-   
+tablaVeinte<-tablaSobrevivencia(20,Female.Aggregate,120)
+ggplot(data = tablaVeinte, aes(x = prob, y = i)) +
+  geom_point(color = "blue", size = 3) +
+  labs(
+    title = "Grafico de Puntos",  # Título del gráfico
+    x = "Eje X",                   # Etiqueta del eje X
+    y = "Eje Y"                   # Etiqueta del eje Y
+  )
 ```
 
 
