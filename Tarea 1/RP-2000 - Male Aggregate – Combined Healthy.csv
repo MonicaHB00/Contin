@@ -1,0 +1,144 @@
+Table Name:,RP-2000 - Male Aggregate – Combined Healthy 
+Table Identity:,987
+Provider Domain:,soa.org
+Provider Name:,Stephen J. Strommen
+Table Reference:,"Retirement Plans Experience Committee of the Society of Actuaries, “The RP-2000 Mortality Tables”, Society of Actuaries, (2000), p 43-45. Accessed: October, 2012 from www.soa.org/files/research/exp-study/rp00_mortalitytables.pdf"
+Content Type:,Annuitant Mortality
+Table Description:,"Retirement Plan (RP) - 2000 Mortality Table - Male Aggregate - Combined Healthy Participant, Male RP-200 Rates (Table 4-5), Base Year 1992. Minimum Age: 1. Maximum Age: 120"
+EffDate:,
+Comments:,"Study Data: The Retirement Protection Act of 1994 (RPA) established mortality assumptions to be used when calculating Current Liabilities for pension plans. More than 100 pension plans submitted data from plan years 1990 through 1994. Also produced by the Retirement Plans Experience Committee (RPEC) were combined Healthy Participant Tables (separately for males and females) by blending the employee and healthy annuitant tables, primarily to permit a direct comparison to previously published tables like the UP-94 table. Note that the data behind the tables is from pension plans thereby having implications on annuity benefits. It is of no consequence that the various tables are labeled as ""employee"", ""disabled retiree"", etc.; all the RP-2000 tables are simply designated ""annuitant mortality"". Methodology: Contributors categorized their submissions as blue collar, white collar, or mixed collar. The data contributors summarized their mortality experience into cells by age, gender, and status (employee, retiree, disabled, and beneficiary). Data submissions that combined all inactive statuses (healthy retirees, beneficiaries, and/or disability retirees) or combined active employees with one or more inactive statuses were excluded. Data submitted in 5-year groups rather than single ages were also excluded. Data with unknown participant status were excluded. Also excluded was data of pension plans that are not directly affected by the RPA Current Liability rules so that the resulting mortality experience would be more appropriate for purposes of the Act. The central year of the data for these tables was estimated as 1992 and the tables were projected to the base year 2000. Three sources of data were reviewed to study recent trends in mortality: Social Security, Federal Civil Service, and the data collected for the study. Mortality improvement factors to project from 1992 to 2000 were based on analysis of these sources. To study long-term trends in mortality the data from four sources was examined: Social Security, Federal Civil Service, the Railroad Retirement Board, and the Society of Actuaries group annuity mortality studies. Liabilities for pension plans are automatically weighted by amounts thus mortality rates calculated were based on amounts. The resulting amount-adjusted mortality rates for employees, healthy annuitants, and disabled annuitants were graduated using Whittaker-Henderson Type B with third differences. The RPEC decided to modify the age 120 rate to 1.0 to produce an artificial terminal age for the table. Data Transcription Errors: None.  Data Certified: 10/2012"
+Keywords:,"Aggregate,Annuitant Mortality,United States of America"
+
+Table # ,1
+Table Description:,"Retirement Plan (RP) - 2000 Mortality Table - Male Aggregate - Combined Healthy Participant, Male RP-200 Rates (Table 4-5). Minimum Age: 1. Maximum Age: 120"
+Nation:,United States of America
+Scaling Factor:,0
+Data Type:,Floating Point
+"Row, Column (if applicable)->id:",Age
+"Row, Column (if applicable)->ScaleType:",Age
+"Row, Column (if applicable)->AxisName:",Age
+"Row, Column (if applicable)->MinScaleValue:",1
+"Row, Column (if applicable)->MaxScaleValue:",120
+"Row, Column (if applicable)->Increment:",1
+
+Row\Column,1
+1,0.000637
+2,0.000430
+3,0.000357
+4,0.000278
+5,0.000255
+6,0.000244
+7,0.000234
+8,0.000216
+9,0.000209
+10,0.000212
+11,0.000219
+12,0.000228
+13,0.000240
+14,0.000254
+15,0.000269
+16,0.000284
+17,0.000301
+18,0.000316
+19,0.000331
+20,0.000345
+21,0.000357
+22,0.000366
+23,0.000373
+24,0.000376
+25,0.000376
+26,0.000378
+27,0.000382
+28,0.000393
+29,0.000412
+30,0.000444
+31,0.000499
+32,0.000562
+33,0.000631
+34,0.000702
+35,0.000773
+36,0.000841
+37,0.000904
+38,0.000964
+39,0.001021
+40,0.001079
+41,0.001142
+42,0.001215
+43,0.001299
+44,0.001397
+45,0.001508
+46,0.001616
+47,0.001734
+48,0.001860
+49,0.001995
+50,0.002138
+51,0.002449
+52,0.002667
+53,0.002916
+54,0.003196
+55,0.003624
+56,0.004200
+57,0.004693
+58,0.005273
+59,0.005945
+60,0.006747
+61,0.007676
+62,0.008757
+63,0.010012
+64,0.011280
+65,0.012737
+66,0.014409
+67,0.016075
+68,0.017871
+69,0.019802
+70,0.022206
+71,0.024570
+72,0.027281
+73,0.030387
+74,0.033900
+75,0.037834
+76,0.042169
+77,0.046906
+78,0.052123
+79,0.057927
+80,0.064368
+81,0.072041
+82,0.080486
+83,0.089718
+84,0.099779
+85,0.110757
+86,0.122797
+87,0.136043
+88,0.150590
+89,0.166420
+90,0.183408
+91,0.199769
+92,0.216605
+93,0.233662
+94,0.250693
+95,0.267491
+96,0.283905
+97,0.299852
+98,0.315296
+99,0.330207
+100,0.344556
+101,0.358628
+102,0.371685
+103,0.383040
+104,0.392003
+105,0.397886
+106,0.400000
+107,0.400000
+108,0.400000
+109,0.400000
+110,0.400000
+111,0.400000
+112,0.400000
+113,0.400000
+114,0.400000
+115,0.400000
+116,0.400000
+117,0.400000
+118,0.400000
+119,0.400000
+120,1.000000
