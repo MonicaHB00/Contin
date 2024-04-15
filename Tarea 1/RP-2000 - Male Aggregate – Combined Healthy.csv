@@ -1,27 +1,3 @@
-Table Name:,RP-2000 - Male Aggregate – Combined Healthy 
-Table Identity:,987
-Provider Domain:,soa.org
-Provider Name:,Stephen J. Strommen
-Table Reference:,"Retirement Plans Experience Committee of the Society of Actuaries, “The RP-2000 Mortality Tables”, Society of Actuaries, (2000), p 43-45. Accessed: October, 2012 from www.soa.org/files/research/exp-study/rp00_mortalitytables.pdf"
-Content Type:,Annuitant Mortality
-Table Description:,"Retirement Plan (RP) - 2000 Mortality Table - Male Aggregate - Combined Healthy Participant, Male RP-200 Rates (Table 4-5), Base Year 1992. Minimum Age: 1. Maximum Age: 120"
-EffDate:,
-Comments:,"Study Data: The Retirement Protection Act of 1994 (RPA) established mortality assumptions to be used when calculating Current Liabilities for pension plans. More than 100 pension plans submitted data from plan years 1990 through 1994. Also produced by the Retirement Plans Experience Committee (RPEC) were combined Healthy Participant Tables (separately for males and females) by blending the employee and healthy annuitant tables, primarily to permit a direct comparison to previously published tables like the UP-94 table. Note that the data behind the tables is from pension plans thereby having implications on annuity benefits. It is of no consequence that the various tables are labeled as ""employee"", ""disabled retiree"", etc.; all the RP-2000 tables are simply designated ""annuitant mortality"". Methodology: Contributors categorized their submissions as blue collar, white collar, or mixed collar. The data contributors summarized their mortality experience into cells by age, gender, and status (employee, retiree, disabled, and beneficiary). Data submissions that combined all inactive statuses (healthy retirees, beneficiaries, and/or disability retirees) or combined active employees with one or more inactive statuses were excluded. Data submitted in 5-year groups rather than single ages were also excluded. Data with unknown participant status were excluded. Also excluded was data of pension plans that are not directly affected by the RPA Current Liability rules so that the resulting mortality experience would be more appropriate for purposes of the Act. The central year of the data for these tables was estimated as 1992 and the tables were projected to the base year 2000. Three sources of data were reviewed to study recent trends in mortality: Social Security, Federal Civil Service, and the data collected for the study. Mortality improvement factors to project from 1992 to 2000 were based on analysis of these sources. To study long-term trends in mortality the data from four sources was examined: Social Security, Federal Civil Service, the Railroad Retirement Board, and the Society of Actuaries group annuity mortality studies. Liabilities for pension plans are automatically weighted by amounts thus mortality rates calculated were based on amounts. The resulting amount-adjusted mortality rates for employees, healthy annuitants, and disabled annuitants were graduated using Whittaker-Henderson Type B with third differences. The RPEC decided to modify the age 120 rate to 1.0 to produce an artificial terminal age for the table. Data Transcription Errors: None.  Data Certified: 10/2012"
-Keywords:,"Aggregate,Annuitant Mortality,United States of America"
-
-Table # ,1
-Table Description:,"Retirement Plan (RP) - 2000 Mortality Table - Male Aggregate - Combined Healthy Participant, Male RP-200 Rates (Table 4-5). Minimum Age: 1. Maximum Age: 120"
-Nation:,United States of America
-Scaling Factor:,0
-Data Type:,Floating Point
-"Row, Column (if applicable)->id:",Age
-"Row, Column (if applicable)->ScaleType:",Age
-"Row, Column (if applicable)->AxisName:",Age
-"Row, Column (if applicable)->MinScaleValue:",1
-"Row, Column (if applicable)->MaxScaleValue:",120
-"Row, Column (if applicable)->Increment:",1
-
-Row\Column,1
 1,0.000637
 2,0.000430
 3,0.000357
