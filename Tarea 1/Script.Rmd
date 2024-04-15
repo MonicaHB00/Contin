@@ -1,0 +1,74 @@
+---
+title: "Tarea 1"
+output: 
+  html_document:
+    code_folding: show
+    theme:
+      bg: "#FFFFFF"
+      fg: "#333333"
+      primary: "#2E8B57"
+      secondary: "#6A5ACD"
+      base_font:
+        google: Noto Sans
+      heading_font:
+        google: Oswald
+---
+
+```{r setup, include=FALSE}
+if (requireNamespace("thematic")) 
+  thematic::thematic_rmd(font = "auto")
+```
+
+### Carga de paquetes
+
+```{r}
+
+```
+
+
+### Carga de Archivos 
+```{r}
+Female.Aggregate <- read.csv("~/GitHub/Contin/Tarea 1/RP-2000 - Female Aggregate - Combined Healthy.csv")
+Male_Aggregate <- read.csv("~/GitHub/Contin/Tarea 1/RP-2000 - Male Aggregate - Combined Healthy.csv")
+
+```
+# Funcion que crea kpx
+```{r}
+kpx <- function(x, k, qx, w) {
+  p<-1
+  if ((k > x) & (k < w)) {
+    qx <- qx %>% mutate(X1 = 1 - X1)
+    TABLA <- qx %>% filter((x <= Row.Column) & (Row.Column < k))
+    p <- prod(TABLA$X1)
+  }
+  return(p)
+}
+```
+
+# funcion que crea e_x
+```{r}
+ex <- function(x, qx, w) {
+  cantidadAños <- w - x
+  suma <- 0
+  
+  for (i in 1:w - x) {
+    prob <- kpx(x, x + i, qx, w)
+    suma <- suma + prob
+  }
+  return(suma)
+}
+```
+
+
+
+
+# Pruebas
+```{r}
+ 
+ex(20,Female.Aggregate,120)
+   
+```
+
+
+
+
