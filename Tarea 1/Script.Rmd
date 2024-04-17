@@ -22,7 +22,9 @@ if (requireNamespace("thematic"))
 ### Carga de paquetes
 
 ```{r}
-
+library(dplyr)
+library(ggplot2)
+i<-seq(1:120)
 ```
 
 
@@ -32,26 +34,33 @@ Female.Aggregate <- read.csv("~/GitHub/Contin/Tarea 1/RP-2000 - Female Aggregate
 Male_Aggregate <- read.csv("C:/Users/moni1/Dropbox/Mi PC (LAPTOP-2AN4DJNH)/Downloads/Export (2).csv")
 
 ```
-# Funcion que crea kpx
+# Funcion que crea kpx (Pregunta 2)
 ```{r}
 kpx <- function(x, k, qx, w) {
   p<-1
-  if ((k > x) & (k < w)) {
-    qx <- qx %>% mutate(X1 = 1 - X1)
-    TABLA <- qx %>% filter((x <= Row.Column) & (Row.Column < k))
+  qx <- qx %>% mutate(X1 = 1 - X1)
+  if(k<x){
+    p<-1
+  }else{
+     if (k >= w){
+      p <- 0
+     }else{
+      TABLA <- qx %>% filter((x <= Row.Column) & (Row.Column < k))
     p <- prod(TABLA$X1)
+    }
   }
+
   return(p)
 }
 ```
 
-# funcion que crea e_x
+# Funcion que crea e_x (Pregunta 3)
 ```{r}
 ex <- function(x, qx, w) {
   cantidadAños <- w - x
   suma <- 0
   
-  for (i in 1:w - x) {
+  for (i in 1:cantidadAños) {
     prob <- kpx(x, x + i, qx, w)
     suma <- suma + prob
   }
@@ -59,37 +68,158 @@ ex <- function(x, qx, w) {
 }
 ```
 
-#Creacion de las funciones de sibrevivencia 
 
+# Función de Sobrevivencia (Pregunta 4)
 ```{r}
-tablaSobrevivencia <- function(x, qx, w) {
-  cantidadA <- (w - x)
+tablaSobrevivencia <- function(edad, qx, w) {
+  cantidadA <- (w - edad)
   tablaSobrevivencia <- data.frame()
   
-  for (i in 1:cantidadA) {
-    prob <- kpx(x, x + i, qx, w)
+  for (i in 1:w) {
+    prob <- kpx(edad,i, qx, w)
+    
+    
     nueva_fila <- data.frame(i, prob)
     tablaSobrevivencia <- rbind(tablaSobrevivencia, nueva_fila)
   }
-
+  colnames(tablaSobrevivencia)<-c("edad","Probabilidad")
   return(tablaSobrevivencia)
 }
 
 ```
 
 
-# Pruebas
+
+##Female 
 ```{r}
-tablaVeinte<-tablaSobrevivencia(20,Female.Aggregate,120)
-ggplot(data = tablaVeinte, aes(x = prob, y = i)) +
-  geom_point(color = "blue", size = 3) +
-  labs(
-    title = "Grafico de Puntos",  # Título del gráfico
-    x = "Eje X",                   # Etiqueta del eje X
-    y = "Eje Y"                   # Etiqueta del eje Y
-  )
+tabla1<-tablaSobrevivencia(1,Female.Aggregate,120)
+tabla25<-tablaSobrevivencia(25,Female.Aggregate,120)
+tabla50<-tablaSobrevivencia(50,Female.Aggregate,120)
+tabla75<-tablaSobrevivencia(75,Female.Aggregate,120)
+tabla100<-tablaSobrevivencia(100,Female.Aggregate,120)
+```
+```{r}
+ggplot() +
+  geom_line(data = tabla1, aes(x = i, y = Probabilidad, color = "F(x) edad 1"))+
+  geom_line(data = tabla25, aes(x = i, y = Probabilidad, color = "F(x) edad 25")) +
+  geom_line(data = tabla50, aes(x = i, y = Probabilidad, color = "F(x) edad 50")) +
+  geom_line(data = tabla75, aes(x = i, y = Probabilidad, color = "F(x) edad 75")) +
+  geom_line(data = tabla100, aes(x = i, y = Probabilidad, color = "F(x) edad 100")) +
+  labs(x = "Edad", y = "Probabilidad de supervivencia", color = "Tabla") +
+  ggtitle("Función de sobrivencia para la población Femenina") +
+  scale_color_manual(values = c("F(x) edad 1" = "purple","F(x) edad 25" = "blue", "F(x) edad 50" = "red", "F(x) edad 75" = "green", "F(x) edad 100" = "orange")) +
+  theme_minimal()
+```
+## Male
+```{r}
+tabla1<-tablaSobrevivencia(1,Male_Aggregate,120)
+tabla25<-tablaSobrevivencia(25,Male_Aggregate,120)
+tabla50<-tablaSobrevivencia(50,Male_Aggregate,120)
+tabla75<-tablaSobrevivencia(75,Male_Aggregate,120)
+tabla100<-tablaSobrevivencia(100,Male_Aggregate,120)
+```
+```{r}
+ggplot() +
+  geom_line(data = tabla1, aes(x = i, y = Probabilidad, color = "F(x) edad 1"))+
+  geom_line(data = tabla25, aes(x = i, y = Probabilidad, color = "F(x) edad 25")) +
+  geom_line(data = tabla50, aes(x = i, y = Probabilidad, color = "F(x) edad 50")) +
+  geom_line(data = tabla75, aes(x = i, y = Probabilidad, color = "F(x) edad 75")) +
+  geom_line(data = tabla100, aes(x = i, y = Probabilidad, color = "F(x) edad 100")) +
+  labs(x = "Edad", y = "Probabilidad de supervivencia", color = "Tabla") +
+  ggtitle("Función de sobrivencia para la población Masculina") +
+  scale_color_manual(values = c("F(x) edad 1" = "purple","F(x) edad 25" = "blue", "F(x) edad 50" = "red", "F(x) edad 75" = "green", "F(x) edad 100" = "orange")) +
+  theme_minimal()
+```
+```{r}
+tablaSobrevivencia2 <- function(edad, qx, w) {
+  cantidadA <- (w - edad)
+  tablaSobrevivencia <- data.frame()
+  
+  for (i in 1:w) {
+    prob <- kpx(edad,edad+i, qx, w)
+    nueva_fila <- data.frame(i, prob)
+    tablaSobrevivencia <- rbind(tablaSobrevivencia, nueva_fila)
+  }
+  colnames(tablaSobrevivencia)<-c("edad","Probabilidad")
+  return(tablaSobrevivencia)
+}
+```
+```{r}
+tabla1<-tablaSobrevivencia2(1,Female.Aggregate,120)
+tabla25<-tablaSobrevivencia2(25,Female.Aggregate,120)
+tabla50<-tablaSobrevivencia2(50,Female.Aggregate,120)
+tabla75<-tablaSobrevivencia2(75,Female.Aggregate,120)
+tabla100<-tablaSobrevivencia2(100,Female.Aggregate,120)
+```
+```{r}
+ggplot() +
+  
+  geom_line(data = tabla1, aes(x = i, y = Probabilidad, color = "F(x) edad 1"))+
+  geom_line(data = tabla25, aes(x = i, y = Probabilidad, color = "F(x) edad 25")) +
+  geom_line(data = tabla50, aes(x = i, y = Probabilidad, color = "F(x) edad 50")) +
+  geom_line(data = tabla75, aes(x = i, y = Probabilidad, color = "F(x) edad 75")) +
+  geom_line(data = tabla100, aes(x = i, y = Probabilidad, color = "F(x) edad 100")) +
+  labs(x = "Años", y = "Probabilidad de supervivencia", color = "Tabla") +
+  ggtitle("Función de sobrivencia para la población Femenina") +
+  scale_color_manual(values = c("F(x) edad 1" = "purple","F(x) edad 25" = "blue", "F(x) edad 50" = "red", "F(x) edad 75" = "green", "F(x) edad 100" = "orange")) +
+  theme_minimal()
+```
+
+
+```{r}
+tabla1<-tablaSobrevivencia2(1,Male_Aggregate,120)
+tabla25<-tablaSobrevivencia2(25,Male_Aggregate,120)
+tabla50<-tablaSobrevivencia2(50,Male_Aggregate,120)
+tabla75<-tablaSobrevivencia2(75,Male_Aggregate,120)
+tabla100<-tablaSobrevivencia2(100,Male_Aggregate,120)
+```
+```{r}
+ggplot() +
+  
+  geom_line(data = tabla1, aes(x = i, y = Probabilidad, color = "F(x) edad 1"))+
+  geom_line(data = tabla25, aes(x = i, y = Probabilidad, color = "F(x) edad 25")) +
+  geom_line(data = tabla50, aes(x = i, y = Probabilidad, color = "F(x) edad 50")) +
+  geom_line(data = tabla75, aes(x = i, y = Probabilidad, color = "F(x) edad 75")) +
+  geom_line(data = tabla100, aes(x = i, y = Probabilidad, color = "F(x) edad 100")) +
+  labs(x = "Años", y = "Probabilidad de supervivencia", color = "Tabla") +
+  ggtitle("Función de sobrivencia para la población Masculina") +
+  scale_color_manual(values = c("F(x) edad 1" = "purple","F(x) edad 25" = "blue", "F(x) edad 50" = "red", "F(x) edad 75" = "green", "F(x) edad 100" = "orange")) +
+  theme_minimal()
 ```
 
 
 
+# Tabla de esperanzas (Pregunta 5)
+```{r}
+tablaEsperanzas<-function(qx,w){
+  tablaEspera <- data.frame()
+  for (i in 1:w) {
+    esperanza<-ex(i,qx,w)
+    nueva_fila <- data.frame(i, esperanza)
+    tablaEspera <- rbind(tablaEspera, nueva_fila)
+  }
+  return(tablaEspera)
+}
+```
+
+```{r}
+female.E<-tablaEsperanzas(Female.Aggregate,120)
+View(female.E)
+
+male.E<-tablaEsperanzas(Male_Aggregate,120)
+View(male.E)
+```
+
+# Analisis de los Resultados 
+## Analisis de los graficos
+Se puede observar un comportamiento similar en los gráficos de ambos géneros. Se presentan dos tipos de gráficos de supervivencia: uno muestra los años vividos y los años restantes, por lo que las curvas comienzan en la edad. Aún así, se nota una diferencia en las curvas a diferentes edades. Por ejemplo, la curva a los 25 años muestra una pendiente más suave que alcanza una probabilidad de supervivencia de 0 hasta los 120 años. Por otro lado, se puede observar la curva a los 100 años, que comienza a descender mucho más tarde debido a que esta persona ya ha vivido hasta los 100 años, y luego desciende abruptamente hasta los 120 años. 
+
+En esta curva casi no se nota la diferencia de las primeras generaciones, ya que muestran una curvatura similar, esto se puede deber que la muerte es esperada hasta despues no durante estos años.
+
+La segunda curva enseña lo mismo con la excepcion de que su eje x no muestra la edad si no el tiempo pasado es decir pensando que se tienen poblaciones ya con las edades correspondientes y vamos a generar esas funciones en este momento, pero con las curvas se observa lo mismo, donde en poblaciones de mayor edad tiene una curva mas fuerte y en las de menor edad es una curva mas suave representando en todos los años donde se pueden morir.  
+
+
+
+## Analisis de las esperanzas
+Con las tablas de esperanza se puede notar un mismo comportamiento en las poblaciones femeninas y masculinas, donde segun avanza la edad disminuye los años restantes de esperanza de vida, y se nota la diferencia de las poblaciones por genero donde la poblacion femenina tiene una esperanza un poco mayor. 
 
