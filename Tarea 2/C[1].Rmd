@@ -1,0 +1,137 @@
+---
+title: "Tarea 5 Contingencias de Vida"
+author: "Carlos Andrade González B80449"
+author: "Mónica Hernández Brenes  B"
+date: "2023-06-22"l
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+```
+
+```{r}
+tasa_descuento <- 0.08
+sumas_aseguradas <- c(1000000,2000000,4000000,6000000,8000000,10000000,50000000)
+tabla_mortalidad <- read_excel("C:\\Users\\Andres\\Desktop\\Carlos\\I Semestre 2023\\Contingencias\\Tablas_de_mortalidad.xlsx") 
+mortalidad_hombres<-tabla_mortalidad$qx_Hombres
+mortalidad_mujeres<-tabla_mortalidad$qx_Mujeres
+```
+
+```{r}
+#Calculo de la q
+q_x <- function(x,m,colum){
+  productoria <-1
+  q <-0
+  for (i in 1:(m-x)){
+    productoria<- productoria*(1-colum[x+i])
+  }
+  q<-1-productoria
+  return (q)
+}
+
+
+#Calculo de q diferida
+q_diferida<-function(x,m,l,colum){
+  productoria<-1
+  q<-0
+  for (i in 1:(m-x)){
+    productoria<- productoria*(1-colum[x+i])
+  }
+  q<- productoria*q_x(m,m+l,colum)
+  return (q)
+}
+```
+
+```{r}
+
+kpx <- function(x, k, qx, w) {
+  if (k == 0) {
+    return(1)  # Si k es igual a cero, devuelve 1
+  } else {
+    if ((x + k) <= w) {
+      px <- 1
+      for (i in 1:(k + 1)) {
+        px <- px * (1 - qx[x + i])  # Calcula el producto de (1 - qx[x + i]) para i en 1 hasta k+1
+      }
+      return(px)  # Devuelve el resultado del producto
+    } else {
+      return(0)  # Si (x + k) es mayor que w, devuelve 0
+    }
+  }
+}
+
+#Calculo de a_x_n
+a_x_n <- function(x, n, i, qx, w) {
+  v <- (1 / (1 + i))  # Calcula el valor de v
+  if (x < 0 || i < 0 || x > w) {
+    stop("Parametros no son validos")  # Verifica si los parámetros son válidos
+  }
+  axn <- 0  # Inicializa axn en 0
+  for (k in 0:(n - 1)) {
+    axn <- axn + (v^k * kpx(x, k, qx, w))  # Calcula la suma de v^k multiplicado por kpx(x,k,qx,w)
+  }
+  return(axn)  # Devuelve el valor de axn
+}
+```
+
+
+```{r}
+#Funcion que calcula el beneficio esperado
+A_x<-function(x,tasa,colum){
+  A<-0
+  v<-(1 / (1 + tasa))
+  if (x<21){
+    A<- sumas_aseguradas[1]*q_x(x,21,colum)*v^(21-x)+sumas_aseguradas[2]*q_diferida(x,21,1,colum)*v^(22-x)+sumas_aseguradas[3]*q_diferida(x,22,1,colum)*v^(23-x)+sumas_aseguradas[4]*q_diferida(x,23,1,colum)*v^(24-x)+sumas_aseguradas[5]*q_diferida(x,24,1,colum)*v^(25-x)+sumas_aseguradas[6]*q_diferida(x,25,16,colum)*v^(41-x)+sumas_aseguradas[7]*q_diferida(x,41,70,colum)*v^(110-x)
+  }
+  
+  if(21<=x & x<22){
+      A<- sumas_aseguradas[2]*q_x(x,22,colum)*v^(22-x)+sumas_aseguradas[3]*q_diferida(x,22,1,colum)*v^(23-x)+sumas_aseguradas[4]*q_diferida(x,23,1,colum)*v^(24-x)+sumas_aseguradas[5]*q_diferida(x,24,1,colum)*v^(25-x)+sumas_aseguradas[6]*q_diferida(x,25,16,colum)*v^(41-x)+sumas_aseguradas[7]*q_diferida(x,41,70,colum)*v^(110-x)
+  }
+      
+  if(22<=x & x<23){
+    A<-sumas_aseguradas[3]*q_x(x,23,colum)*v^(23-x)+sumas_aseguradas[4]*q_diferida(x,23,1,colum)*v^(24-x)+sumas_aseguradas[5]*q_diferida(x,24,1,colum)*v^(25-x)+sumas_aseguradas[6]*q_diferida(x,25,16,colum)*v^(41-x)+sumas_aseguradas[7]*q_diferida(x,41,70,colum)*v^(110-x)
+  }
+        
+  if(23<=x & x<24){
+    A<-sumas_aseguradas[4]*q_x(x,24,colum)*v^(24-x)+sumas_aseguradas[5]*q_diferida(x,24,1,colum)*v^(25-x)+sumas_aseguradas[6]*q_diferida(x,25,16,colum)*v^(41-x)+sumas_aseguradas[7]*q_diferida(x,41,70,colum)*v^(110-x)
+  }
+  
+  if(24<=x & x<25){
+    A<-sumas_aseguradas[5]*q_x(x,25,colum)*v^(25-x)+sumas_aseguradas[6]*q_diferida(x,25,16,colum)*v^(41-x)+sumas_aseguradas[7]*q_diferida(x,41,70,colum)*v^(110-x)
+  }
+            
+  if(25<=x & x<41){
+    A<-sumas_aseguradas[6]*q_x(x,41,colum)*v^(41-x)+sumas_aseguradas[7]*q_diferida(x,41,70,colum)*v^(110-x)
+  }
+              
+  if(41<=x & x<=100){
+    A<-sumas_aseguradas[7]*q_x(x,110,colum)*v^(110-x)
+  }
+  return(A)
+}
+
+```
+
+```{r}
+#Calculo de primas
+
+primas_hombres<-c(0:100)
+for(i in 0:100){
+  primas_hombres[i+1]<-(A_x(i,tasa_descuento,mortalidad_hombres))/(a_x_n(i,10,tasa_descuento,mortalidad_hombres,110))
+}
+
+primas_mujeres<-c(0:100)
+for(i in 0:100){
+  primas_mujeres[i+1]<-(A_x(i,tasa_descuento,mortalidad_mujeres))/(a_x_n(i,10,tasa_descuento,mortalidad_mujeres,110))
+}
+Prima_0 <- (A_x(0,tasa_descuento,mortalidad_hombres))/(a_x_n(0,10,tasa_descuento,mortalidad_hombres,110))
+
+```
+
+
+```{r}
+print(primas_hombres[51])
+print(primas_mujeres[51])
+```
