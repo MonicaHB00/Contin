@@ -89,15 +89,16 @@ Axn <- function(x, y, qx, w, i,n) {
 
 # Pregunta 3
 ```{r}
-SeguroVidaCompleta <- function(qx, w,year) { 
-interes<-0.05
-vidaCompleta <- data.frame()
-for (i in 1:w) {
-seguro <- Ax(i,year, qx, w,interes)
-nueva_fila <- data.frame(i, seguro)
-vidaCompleta <- rbind(vidaCompleta, nueva_fila)
-} colnames(vidaCompleta)<-c("edad","Seguro") 
-return(vidaCompleta)
+SeguroVidaCompleta <- function(qx, w, year) {
+  interes <- 0.05
+  vidaCompleta <- data.frame()
+  for (i in 1:w) {
+    seguro <- Ax(i, year, qx, w, interes)
+    nueva_fila <- data.frame(i, seguro)
+    vidaCompleta <- rbind(vidaCompleta, nueva_fila)
+  }
+  colnames(vidaCompleta) <- c("edad", "Seguro")
+  return(vidaCompleta)
 }
 ```
 
@@ -111,26 +112,28 @@ VidaCompleta_hombres_2050<-SeguroVidaCompleta(tablaHombres,100,2050)
 ```
  # Pregunta 5
 ```{r}
-SeguroVidaCompleta <- function (x, y, qx, w, i,n) { 
-interes<-0.05
-vidaCompleta <- data.frame()
-for (i in 1:w) {
-seguro <- Axn(i,year, qx, w,interes,n)
-nueva_fila <- data.frame(i, seguro)
-vidaCompleta <- rbind(vidaCompleta, nueva_fila)
-} colnames(vidaCompleta)<-c("edad","Seguro") 
-return(vidaCompleta)
+SeguroVidaTemporal <- function (qx, w,year, n) {
+  interes <- 0.05
+  vidaTemporal <- data.frame()
+  for (i in 1:w) {
+    seguro <- Axn(i, year, qx, w, interes, n)
+    nueva_fila <- data.frame(i, seguro)
+    vidaTemporal <- rbind(vidaTemporal, nueva_fila)
+  }
+  colnames(vidaTemporal) <- c("edad", "Seguro")
+  return(vidaTemporal)
 }
 ```
 
 ```{r}
-VidaCompleta_mujeres_2024<-SeguroVidaCompleta(tablaMujeres,100,2024)
-VidaCompleta_mujeres_2050<-SeguroVidaCompleta(tablaMujeres,100,2050)
+VidaTemporal_mujeres_2024<-SeguroVidaTemporal(tablaMujeres,100,2024,10)
+VidaTemporal_mujeres_2050<-SeguroVidaTemporal(tablaMujeres,100,2050,10)
 ```
 ```{r}
-VidaCompleta_hombres_2024<-SeguroVidaCompleta(tablaHombres,100,2024)
-VidaCompleta_hombres_2050<-SeguroVidaCompleta(tablaHombres,100,2050)
+VidaTemporal_hombres_2024<-SeguroVidaTemporal(tablaHombres,100,2024,10)
+VidaTemporal_hombres_2050<-SeguroVidaTemporal(tablaHombres,100,2050,10)
 ```
+
 
 
 
