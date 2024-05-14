@@ -68,7 +68,7 @@ Ax<-function(x,y,qx,w,i){
 
 # Pregunta 3
 ```{r}
-Ax <- function(x, y, qx, w, i) {
+Axn <- function(x, y, qx, w, i,n) {
   qx <- qx %>% filter(year == y)
   v <- (1 / (1 + i))
   
@@ -86,3 +86,51 @@ Ax <- function(x, y, qx, w, i) {
   return(ax)
 }
 ```
+
+# Pregunta 3
+```{r}
+SeguroVidaCompleta <- function(qx, w,year) { 
+interes<-0.05
+vidaCompleta <- data.frame()
+for (i in 1:w) {
+seguro <- Ax(i,year, qx, w,interes)
+nueva_fila <- data.frame(i, seguro)
+vidaCompleta <- rbind(vidaCompleta, nueva_fila)
+} colnames(vidaCompleta)<-c("edad","Seguro") 
+return(vidaCompleta)
+}
+```
+
+```{r}
+VidaCompleta_mujeres_2024<-SeguroVidaCompleta(tablaMujeres,100,2024)
+VidaCompleta_mujeres_2050<-SeguroVidaCompleta(tablaMujeres,100,2050)
+```
+```{r}
+VidaCompleta_hombres_2024<-SeguroVidaCompleta(tablaHombres,100,2024)
+VidaCompleta_hombres_2050<-SeguroVidaCompleta(tablaHombres,100,2050)
+```
+ # Pregunta 5
+```{r}
+SeguroVidaCompleta <- function (x, y, qx, w, i,n) { 
+interes<-0.05
+vidaCompleta <- data.frame()
+for (i in 1:w) {
+seguro <- Axn(i,year, qx, w,interes,n)
+nueva_fila <- data.frame(i, seguro)
+vidaCompleta <- rbind(vidaCompleta, nueva_fila)
+} colnames(vidaCompleta)<-c("edad","Seguro") 
+return(vidaCompleta)
+}
+```
+
+```{r}
+VidaCompleta_mujeres_2024<-SeguroVidaCompleta(tablaMujeres,100,2024)
+VidaCompleta_mujeres_2050<-SeguroVidaCompleta(tablaMujeres,100,2050)
+```
+```{r}
+VidaCompleta_hombres_2024<-SeguroVidaCompleta(tablaHombres,100,2024)
+VidaCompleta_hombres_2050<-SeguroVidaCompleta(tablaHombres,100,2050)
+```
+
+
+
