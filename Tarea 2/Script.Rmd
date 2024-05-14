@@ -110,6 +110,26 @@ VidaCompleta_mujeres_2050<-SeguroVidaCompleta(tablaMujeres,100,2050)
 VidaCompleta_hombres_2024<-SeguroVidaCompleta(tablaHombres,100,2024)
 VidaCompleta_hombres_2050<-SeguroVidaCompleta(tablaHombres,100,2050)
 ```
+## Grafico 
+```{r}
+vidaCompleta_mujeres<-merge(VidaCompleta_mujeres_2024,VidaCompleta_mujeres_2050,by=edad)
+vidaCompleta_hombres<-merge(VidaCompleta_hombres_2024,VidaCompleta_hombres_2050, by=edad)
+
+VidaCompleta<-merge(vidaCompleta_hombres,vidaCompleta_mujeres,by=edad)
+
+ggplot(vida_completa, aes(x = edad)) +
+  geom_line(aes(y = variable1_hombres_2024, color = "Hombres 2024")) +
+  geom_line(aes(y = variable1_hombres_2050, color = "Hombres 2050")) +
+  geom_line(aes(y = variable1_mujeres_2024, color = "Mujeres 2024")) +
+  geom_line(aes(y = variable1_mujeres_2050, color = "Mujeres 2050")) +
+  labs(title = "Comparación del Seguro entre hombres y mujeres en 2024 y 2050",
+       x = "Edad",
+       y = "Seguro") +
+  scale_color_manual(values = c("Hombres 2024" = "blue", "Hombres 2050" = "darkblue", 
+                                 "Mujeres 2024" = "red", "Mujeres 2050" = "darkred")) +
+  theme_minimal()
+```
+
  # Pregunta 5
 ```{r}
 SeguroVidaTemporal <- function (qx, w,year, n) {
@@ -133,6 +153,7 @@ VidaTemporal_mujeres_2050<-SeguroVidaTemporal(tablaMujeres,100,2050,10)
 VidaTemporal_hombres_2024<-SeguroVidaTemporal(tablaHombres,100,2024,10)
 VidaTemporal_hombres_2050<-SeguroVidaTemporal(tablaHombres,100,2050,10)
 ```
+
 
 
 
