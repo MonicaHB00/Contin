@@ -38,7 +38,7 @@ Male_Aggregate <- read.csv("C:/Users/moni1/Dropbox/Mi PC (LAPTOP-2AN4DJNH)/Downl
 ```{r}
 kpx <- function(x, k, qx, w) {
   p<-1
-  qx <- qx %>% mutate(X1 = 1 - X1)
+  qx <- qx %>% mutate(X1 = 1 - qx)
   if(k<x){
     p<-1
   }else{
@@ -46,7 +46,7 @@ kpx <- function(x, k, qx, w) {
       p <- 0
      }else{
       TABLA <- qx %>% filter((x <= Row.Column) & (Row.Column < k))
-    p <- prod(TABLA$X1)
+    p <- prod(TABLA$qx)
     }
   }
 
@@ -92,7 +92,7 @@ tablaSobrevivencia <- function(edad, qx, w) {
 
 ##Female 
 ```{r}
-tabla1<-tablaSobrevivencia(1,Female.Aggregate,120)
+tabla1<-tablaSobrevivencia(1,tablaMujeres,120)
 tabla25<-tablaSobrevivencia(25,Female.Aggregate,120)
 tabla50<-tablaSobrevivencia(50,Female.Aggregate,120)
 tabla75<-tablaSobrevivencia(75,Female.Aggregate,120)

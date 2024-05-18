@@ -1,6 +1,6 @@
 ---
 title: "Tarea 2"
-author: "Mónica Hernández"
+author: "Mónica Hernández (B83731)"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -12,10 +12,12 @@ Cargar librerias
 ```{r}
 library(readxl)
 library(dplyr)
+library(ggplot2)
 ```
 # Pregunta 1
 ```{r}
 tavid2000_2150 <- read_excel("~/GitHub/Contin/Tarea 2/tavid2000-2150.xls")
+tavid2000_2150<-tavid2000_2150%>%mutate(qx=as.numeric(qx))
 ```
 
 ```{r}
@@ -25,41 +27,61 @@ tablaMujeres <- tavid2000_2150 %>% filter(sex == 2)
 
 ### Funciones utiles
 ```{r}
+# kpx <- function(x, k, qx, w) {
+#   p<-1
+#   qx <- qx %>% mutate(px = 1 - qx)
+#   if(k<x){
+#     p<-1
+#   }else{
+#      if (k >= w){
+#       p <- 0
+#      }else{
+#       TABLA <- qx %>% filter((x <= edad) & (edad < k))
+#     p <- prod(TABLA$px)
+#     }
+#   }
+#   return(p)
+# }
+
+```
+
+```{r}
+
 kpx <- function(x, k, qx, w) {
-  p<-1
-  qx <- qx %>% mutate(X1 = 1 - X1)
-  if(k<x){
-    p<-1
-  }else{
-     if (k >= w){
-      p <- 0
-     }else{
-      TABLA <- qx %>% filter((x <= Row.Column) & (Row.Column < k))
-    p <- prod(TABLA$X1)
+  if (k == 0) {
+    return(1)  # Si k es igual a cero, devuelve 1
+  } else {
+    if ((x + k) <= w) {
+      px <- 1
+      for (i in 1:(k + 1)) {
+        px <- px * (1 - qx[x + i])  # Calcula el producto de (1 - qx[x + i]) para i en 1 hasta k+1
+      }
+      return(px)  # Devuelve el resultado del producto
+    } else {
+      return(0)  # Si (x + k) es mayor que w, devuelve 0
     }
   }
-
-  return(p)
 }
 ```
 
 
 ```{r}
-qx_diferida<-function(u,t,x,w){
-  return(kpx(x, u , qx, w) - kpx(x, u+t, qx, w))
+qx_diferida<-function(u,t,qx,x,w){
+  return( kpx(x, u , qx, w)-kpx(x, u+t, qx, w))
 }
+
 ```
 
 
 # Pregunta 2
 ```{r}
-Ax<-function(x,y,qx,w,i){
-  qx<-qx%>% filter(year==y)
+Ax<-function(x,y,qx,w,i,genero){
+  qx<-qx%>% filter(year==y,sex==genero)
   v <- (1 / (1 + i))  
   
   ax <- 0  
   for (k in 0:(w - 1)) {
-    ax <- ax + sum(v^(k + 1) * qx_diferida(k,1,x,w))
+    ax <- ax + sum(v^(k + 1) * qx_diferida(k,1,qx$qx,x,w))
   }
   return(ax)  
 
@@ -68,18 +90,19 @@ Ax<-function(x,y,qx,w,i){
 
 # Pregunta 3
 ```{r}
-Axn <- function(x, y, qx, w, i,n) {
-  qx <- qx %>% filter(year == y)
+Axn <- function(x, y, qx, w, i,n,genero) {
+  
+  qx <- qx %>% filter(sex == genero,year == y)
   v <- (1 / (1 + i))
   
   ax <- 0
   if (x + n + 1 <= w) {
     for (k in 0:(n - 1)) {
-      ax <- ax + sum(v ^ (k + 1) * qx_diferida(k, 1, x, w))
+      ax <- ax + sum(v ^ (k + 1) * qx_diferida(k, 1,qx$qx, x, w))
     }
   } else{
-    for (k in 0:(w - 1)) {
-      ax <- ax + sum(v ^ (k + 1) * qx_diferida(k, 1, x, w))
+   for (k in 0:(w - 1)) {
+      ax <- ax + sum(v ^ (k + 1) * qx_diferida(k, 1,qx$qx, x, w))
     }
   }
   
@@ -89,40 +112,44 @@ Axn <- function(x, y, qx, w, i,n) {
 
 # Pregunta 3
 ```{r}
-SeguroVidaCompleta <- function(qx, w, year) {
+SeguroVidaCompleta <- function(qx, w, year,genero) {
   interes <- 0.05
   vidaCompleta <- data.frame()
   for (i in 1:w) {
-    seguro <- Ax(i, year, qx, w, interes)
+    seguro <- Ax(i, year, qx, w, interes,genero)
     nueva_fila <- data.frame(i, seguro)
     vidaCompleta <- rbind(vidaCompleta, nueva_fila)
   }
-  colnames(vidaCompleta) <- c("edad", "Seguro")
+  colnames(vidaCompleta) <- c("edad", paste0("Seguro_",year,"_",genero))
   return(vidaCompleta)
 }
 ```
 
+
+
+
 ```{r}
-VidaCompleta_mujeres_2024<-SeguroVidaCompleta(tablaMujeres,100,2024)
-VidaCompleta_mujeres_2050<-SeguroVidaCompleta(tablaMujeres,100,2050)
+VidaCompleta_mujeres_2024<-SeguroVidaCompleta(tavid2000_2150,115,2024,2)
+VidaCompleta_mujeres_2050<-SeguroVidaCompleta(tavid2000_2150,115,2050,2)
 ```
 ```{r}
-VidaCompleta_hombres_2024<-SeguroVidaCompleta(tablaHombres,100,2024)
-VidaCompleta_hombres_2050<-SeguroVidaCompleta(tablaHombres,100,2050)
+VidaCompleta_hombres_2024<-SeguroVidaCompleta(tavid2000_2150,115,2024,1)
+VidaCompleta_hombres_2050<-SeguroVidaCompleta(tavid2000_2150,115,2050,1)
 ```
 ## Grafico 
 ```{r}
-vidaCompleta_mujeres<-merge(VidaCompleta_mujeres_2024,VidaCompleta_mujeres_2050,by=edad)
-vidaCompleta_hombres<-merge(VidaCompleta_hombres_2024,VidaCompleta_hombres_2050, by=edad)
+vidaCompleta_mujeres<-merge(VidaCompleta_mujeres_2024,VidaCompleta_mujeres_2050,by="edad")
+vidaCompleta_hombres<-merge(VidaCompleta_hombres_2024,VidaCompleta_hombres_2050, by="edad")
 
-VidaCompleta<-merge(vidaCompleta_hombres,vidaCompleta_mujeres,by=edad)
+VidaCompleta<-merge(vidaCompleta_hombres,vidaCompleta_mujeres,by="edad")
 
-ggplot(vida_completa, aes(x = edad)) +
-  geom_line(aes(y = variable1_hombres_2024, color = "Hombres 2024")) +
-  geom_line(aes(y = variable1_hombres_2050, color = "Hombres 2050")) +
-  geom_line(aes(y = variable1_mujeres_2024, color = "Mujeres 2024")) +
-  geom_line(aes(y = variable1_mujeres_2050, color = "Mujeres 2050")) +
-  labs(title = "Comparación del Seguro entre hombres y mujeres en 2024 y 2050",
+
+ggplot(VidaCompleta, aes(x = edad)) +
+  geom_line(aes(y = Seguro_2024_1, color = "Hombres 2024")) +
+  geom_line(aes(y = Seguro_2050_1, color = "Hombres 2050")) +
+  geom_line(aes(y = Seguro_2024_2, color = "Mujeres 2024")) +
+  geom_line(aes(y = Seguro_2050_2, color = "Mujeres 2050")) +
+  labs(title = "Comparación del Valor Presente de un Seguro \n para los años 2024 y 2050 ",
        x = "Edad",
        y = "Seguro") +
   scale_color_manual(values = c("Hombres 2024" = "blue", "Hombres 2050" = "darkblue", 
@@ -132,29 +159,48 @@ ggplot(vida_completa, aes(x = edad)) +
 
  # Pregunta 5
 ```{r}
-SeguroVidaTemporal <- function (qx, w,year, n) {
+SeguroVidaTemporal <- function (qx, w,year, n,genero) {
   interes <- 0.05
   vidaTemporal <- data.frame()
   for (i in 1:w) {
-    seguro <- Axn(i, year, qx, w, interes, n)
+    seguro <- Axn(i, year, qx, w, interes, n,genero)
     nueva_fila <- data.frame(i, seguro)
     vidaTemporal <- rbind(vidaTemporal, nueva_fila)
   }
-  colnames(vidaTemporal) <- c("edad", "Seguro")
+  colnames(vidaTemporal) <- c("edad", paste0("Seguro_",year,"_",genero))
   return(vidaTemporal)
 }
 ```
 
 ```{r}
-VidaTemporal_mujeres_2024<-SeguroVidaTemporal(tablaMujeres,100,2024,10)
-VidaTemporal_mujeres_2050<-SeguroVidaTemporal(tablaMujeres,100,2050,10)
+VidaTemporal_mujeres_2024<-SeguroVidaTemporal(tavid2000_2150,115,2024,10,2)
+VidaTemporal_mujeres_2050<-SeguroVidaTemporal(tavid2000_2150,115,2050,10,2)
 ```
 ```{r}
-VidaTemporal_hombres_2024<-SeguroVidaTemporal(tablaHombres,100,2024,10)
-VidaTemporal_hombres_2050<-SeguroVidaTemporal(tablaHombres,100,2050,10)
+VidaTemporal_hombres_2024<-SeguroVidaTemporal(tavid2000_2150,115,2024,10,1)
+VidaTemporal_hombres_2050<-SeguroVidaTemporal(tavid2000_2150,115,2050,10,1)
+```
+
+```{r}
+vidaTemporal_mujeres<-merge(VidaTemporal_mujeres_2024,VidaTemporal_mujeres_2050,by="edad")
+vidaTemporal_hombres<-merge(VidaTemporal_hombres_2024,VidaTemporal_hombres_2050, by="edad")
+
+VidaTemporal<-merge(vidaTemporal_hombres,vidaTemporal_mujeres,by="edad")
+
+
+ggplot(VidaTemporal, aes(x = edad)) +
+  geom_line(aes(y = Seguro_2024_1, color = "Hombres 2024")) +
+  geom_line(aes(y = Seguro_2050_1, color = "Hombres 2050")) +
+  geom_line(aes(y = Seguro_2024_2, color = "Mujeres 2024")) +
+  geom_line(aes(y = Seguro_2050_2, color = "Mujeres 2050")) +
+  labs(title = "Comparación del Valor Presente de un Seguro Temporal de 10 años\n para los años 2024 y 2050 ",
+       x = "Edad",
+       y = "Seguro") +
+  scale_color_manual(values = c("Hombres 2024" = "blue", "Hombres 2050" = "darkblue", 
+                                 "Mujeres 2024" = "red", "Mujeres 2050" = "darkred")) +
+  theme_minimal()
 ```
 
 
-
-
-
+### Acesso al github
+https://github.com/MonicaHB00/Contin.git
