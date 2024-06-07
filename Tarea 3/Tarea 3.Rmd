@@ -1,0 +1,141 @@
+---
+title: "Tarea 3"
+author: "Mónica Hernández"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# valores por defecto a las variables globales
+A<-0.00022
+B<-2.7e-06
+c<-1.124
+
+w<-131
+i<-0.05
+
+uxt <- function(t, x) {
+  return(0.9^pmax(0, 2 - t)*(A + B * c^(x + t)))
+}
+
+# Definición de la función tpx
+tpx <- function(t, x) {
+  integrand <- function(l) {
+    uxt(l, x)
+  }
+  integral <- integrate(integrand, 0, t)$value
+  exp(-integral)
+}
+
+tDadouqx<-function(u,t,x){
+  return(tpx(u,x)-tpx(u+t,x))
+}
+
+
+
+px<-c()
+for (i in 20:w) {
+  px<-c(px,tpx(1,i))
+}
+age<-20:w
+
+tablaSobrevivencia<-cbind(age,px,qx=1-px)
+```
+
+
+
+# Pregunta 2
+```{r}
+v<-(1+i)^{-1}
+
+Ian<-function(n,x){
+  suma<-0
+  for (t in 0:n) {
+    suma<-suma+(v^(t)*(t+1))
+  }
+  return(suma)
+}
+```
+
+
+```{r}
+ValorPresente_524a<-tpx(10,50)*(Ian(10,50))
+
+for (l in 1:10) {
+  ValorPresente_524a<-ValorPresente_524a+tDadouqx(l-1,1,50)*Ian(l,50)
+}
+ValorPresente_524a
+
+StandardDesviación_524a<-0
+for (t in 1:10) {
+  StandardDesviación_524a<-StandardDesviación_524a+(Ian(t,50)^2*tDadouqx(t-1,1,50))
+}
+StandardDesviación_524a<-StandardDesviación_524a+(tpx(10,50)*Ian(10,50)^2)- (ValorPresente_524a)^2
+StandardDesviación_524a<-sqrt(StandardDesviación_524a)
+StandardDesviación_524a
+```
+
+
+```{r}
+#b)
+atj<-function(t){
+  return((1-((1.03^t)*(v^t)))/(1-1.03*v))
+}
+
+
+PV_524b<-tpx(10,50)*atj(10)
+for (m in 1:10) {
+  PV_524b<-PV_524b+atj(m)*tDadouqx((m-1),1,50)
+}
+PV_524b_2nd<-tpx(10,50)*atj(10)^2
+for (m in 1:10) {
+  PV_524b_2nd<-PV_524b_2nd+(atj(m)^2)*tDadouqx((m-1),1,50)
+}
+
+ST_524b<-PV_524b_2nd-PV_524b^2
+ST_524b<-sqrt(ST_524b)
+ST_524b
+```
+
+
+```{r}
+d<-1-v
+anualidadCiertaPre<-function(n){
+  (1-v^{n})/i
+}
+
+PV_525a <-0
+for (l in 1:w-65) {
+  PV_525a<-PV_525a+anualidadCiertaPre(l)*tDadouqx(l-1,1,65)
+}
+
+PV_525a_2nd<-0
+for (l in 1:w-65) {
+  PV_525a_2nd<-PV_525a_2nd+anualidadCiertaPre(l)^2*tDadouqx(l-1,1,65)
+}
+
+ST_525a<-PV_525a_2nd-PV_525a^2
+ST_525a<-sqrt(ST_525a)
+ST_525a
+
+#b)
+PV_525b<-(1-tpx(10,65))*anualidadCiertaPre(10)
+for (l in 11:w-65) {
+  PV_525b<-PV_525b+tDadouqx(l-1,1,65)*anualidadCiertaPre(l)
+}
+
+PV_525b_2nd<-(1-tpx(10,65))*anualidadCiertaPre(10)^2
+for (l in 11:w-65) {
+  PV_525b_2nd<-PV_525b_2nd+tDadouqx(l-1,1,65)*anualidadCiertaPre(l)^2
+}
+
+ST_525b<-PV_525b_2nd-PV_525b^2
+ST_525b<-sqrt(ST_525b)
+ST_525b
+```
+
+

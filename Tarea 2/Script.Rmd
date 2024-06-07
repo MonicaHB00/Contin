@@ -21,9 +21,23 @@ tavid2000_2150<-tavid2000_2150%>%mutate(qx=as.numeric(qx))
 ```
 
 ```{r}
-tablaHombres <- tavid2000_2150 %>% filter(sex == 1)
+tablaHombres <- tavid2000_2150 %>% filter(sex == 1,ynac==2003,year==2024)
+qx<-tablaHombres[[1,6]]
 tablaMujeres <- tavid2000_2150 %>% filter(sex == 2)
 ```
+```{r}
+tavid2000_2150 %>%filter(sex == 1,ynac==2003,year==2024)[1,6]
+
+```
+
+
+```{r}
+tabla<-function(sexo,añoNacimiento,año){
+  resultado<-tavid2000_2150%>%filter(sex == sexo,ynac==añoNacimiento,year==año)
+  return(resultado)
+}
+```
+
 
 ### Funciones utiles
 ```{r}
@@ -82,7 +96,7 @@ Ax<-function(x,y,qx,w,i,genero){
   ax <- 0  
   for (k in 0:(w - 1)) {
     ax <- ax + sum(v^(k + 1) * qx_diferida(k,1,qx$qx,x,w))
-  }
+  } 
   return(ax)  
 
 }
