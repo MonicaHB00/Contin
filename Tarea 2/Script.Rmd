@@ -21,12 +21,11 @@ tavid2000_2150<-tavid2000_2150%>%mutate(qx=as.numeric(qx))
 ```
 
 ```{r}
-tablaHombres <- tavid2000_2150 %>% filter(sex == 1,ynac==2003,year==2024)
-qx<-tablaHombres[[1,6]]
+tablaHombres <- tavid2000_2150 %>% filter(sex == 1)
 tablaMujeres <- tavid2000_2150 %>% filter(sex == 2)
 ```
 ```{r}
-tavid2000_2150 %>%filter(sex == 1,ynac==2003,year==2024)[1,6]
+tavid2000_2150 %>%filter(sex == 1,ynac==2003,year==2024)
 
 ```
 
@@ -90,7 +89,7 @@ qx_diferida<-function(u,t,qx,x,w){
 # Pregunta 2
 ```{r}
 Ax<-function(x,y,qx,w,i,genero){
-  qx<-qx%>% filter(year==y,sex==genero)
+  qx<-qx%>% filter(ynac==y,sex==genero)
   v <- (1 / (1 + i))  
   
   ax <- 0  
@@ -106,7 +105,7 @@ Ax<-function(x,y,qx,w,i,genero){
 ```{r}
 Axn <- function(x, y, qx, w, i,n,genero) {
   
-  qx <- qx %>% filter(sex == genero,year == y)
+  qx <- qx %>% filter(sex == genero,ynac  == y)
   v <- (1 / (1 + i))
   
   ax <- 0

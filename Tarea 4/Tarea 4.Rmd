@@ -1,0 +1,94 @@
+---
+title: "Tarea  4"
+author: "Mónica Hernández"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Librerias 
+```{r, include=FALSE}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+```
+
+# Descarga de base de datos
+
+```{r}
+Base_de_datos <- read_excel("Base de datos.xlsx")
+```
+
+```{r}
+tavid2000_2150 <- read_excel("~/GitHub/Contin/Tarea 2/tavid2000-2150.xls")
+tavid2000_2150<-tavid2000_2150%>%mutate(qx=as.numeric(qx))
+```
+
+# Creacion de Funciones 
+
+```{r}
+kpx <- function(x, k, qx, w) {
+  if (k == 0) {
+    return(1)  # Si k es igual a cero, devuelve 1
+  } else {
+    if ((x + k) <= w) {
+      px <- 1
+      for (i in 1:(k + 1)) {
+        px <- px * (1 - qx[x + i])  # Calcula el producto de (1 - qx[x + i]) para i en 1 hasta k+1
+      }
+      return(px)  # Devuelve el resultado del producto
+    } else {
+      return(0)  # Si (x + k) es mayor que w, devuelve 0
+    }
+  }
+}
+```
+
+
+```{r}
+qx_diferida<-function(u,t,qx,x,w){
+  return( kpx(x, u , qx, w)-kpx(x, u+t, qx, w))
+}
+
+```
+
+```{r}
+Axn<-function(interes,genero,edad,n=w,inflación=0,inicial=0){
+  qx
+  imod<-(1-interes)/(1+inflación)-1
+  v<-1/(1+imod)
+ 
+  Suma<-0
+  for(l in inicial:n){
+    Suma<-Suma+v^(l+1)*kqxdiferido(k,x,genero)
+  }
+  return(Suma)
+}
+```
+
+```{r}
+Prima<-function(SumaAsegurada,ed,gen,corte_n,corte_m,int=0.06,inf=0){
+ 
+  imod<-(1-interes)/(1+inflación)-1
+  v<-1/(1+imod)
+  d<-1-v
+ 
+  E_B1<-1*SumaAsegurada*Axn(int,gen,ed,n=49)
+  E_B2<-2*SumaAsegurada*Axn(int,gen,ed,inicial = 49)
+  E_B3<-0.05*SumaAsegurada*v^corte_n*npx(corte_n,ed)
+ 
+  E_P<-(1-Axn(interes=int,genero=gen,edad=ed,n=corte_m,inflación = inf))/d
+ 
+  Denominador<-E_B1+E_B2+E_B3
+ 
+  result(Denominador/E_P)
+}
+```
+
+```{r}
+BaseDeDatos%>%mutate((PrimaValorSinInflación = Prima(SumaAsegurada = 'Suma Asegurada',ed= 'Edad actual',gen= 'Sexo',corte_n=n,corte_m = m),
+                       PrimaValorConInflacion=Prima(SumaAsegurada = 'Suma Asegurada',ed= 'Edad actual',gen= 'Sexo',corte_n=n,corte_m = m, inf=0.02)
+ 
+```
