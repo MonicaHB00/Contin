@@ -31,32 +31,43 @@ str(tavid2000_2150)
 # Creacion de Funciones 
 
 ```{r}
+#'
+#'@ param x es la edad
+#'@ param k la cantidad de años transcurridos 
+#'@ sx el genero recibe int 1 para hombres 2 para mujeres
+#'@ w la edad maxima se agarra el default del modelo de la sugef
+#' return la probabilidad de sobrevivencia de una persona de x años y genero sx k años mas
 kpx <- function(x, k, sx, w = 115) {
  if(x+k>115){
    px=0
  }else{
   añoNac = 2024 - x
   ysub = ifelse(añoNac +x+ k  < 2150, añoNac +x+ k, 2150)
-  print(x)
-  print(k)
-  print(sx)
-  print(añoNac)
-  print(ysub)
   tabla <- tavid2000_2150 %>% filter(ynac == añoNac, year == ysub, sex == sx)
-  print(tabla)
   px <- 1 - tabla$qx[[1]]
  }
   return(px)
 }
 ```
 
-
+#'
+#'@ param u dado u años de haber sobrevivido
+#'@ param t muera antes de t años mas
+#'@ sx el genero recibe int 1 para hombres 2 para mujeres
+#'@ x la edad
+#' return la probabilidad de muerte de una persona de x años que ha sobrevivido u años que muera antes de los siguientes t años
 ```{r}
 qx_diferida<-function(u,t,x,sx){
   return( kpx(x, u,sx)-kpx(x, u+t,sx))
 }
 
 ```
+#'
+#'@ param interes 
+#'@ genero el genero recibe int 1 para hombres 2 para mujeres
+#'@ n la edad maxima se agarra el default del modelo de la sugef
+#'@ edad la edad
+#' return El valor presente de un seguro (default vitalicio pero modificable a temporal y diferido)
 
 ```{r}
 Axn <- function(interes,
@@ -78,36 +89,38 @@ Axn <- function(interes,
 ```
 
 ```{r}
+#'@param ed edad 
+#'@param gen genero
+#'@param corte_n la cantidad de años para que le pagen el seguro dotal 
+#'@param corte_m la cantidad de años que paga primas
+#'@param int interes
+#'@param inf la inflacion
 Prima<-function(SumaAsegurada,ed,gen,corte_n,corte_m,int=0.06,inf=0){
  
   imod<-1-(1-int)/(1+inf)
   v<-1/(1+imod)
   d<-1-v
- 
+
+#Beneficios
   E_B1<-1*SumaAsegurada*Axn(imod,gen,ed,n=49)
   E_B2<-2*SumaAsegurada*Axn(imod,gen,ed,inicial = 49)
   E_B3<-0.05*SumaAsegurada*v^corte_n*kpx(corte_n,ed,gen)
- 
+
+#Coeficioente de las Primas
   E_P<-(1-Axn(interes=imod,genero=gen,edad=ed,corte_m=corte_m,inflación = inf))/d
  
-  Denominador<-E_B1+E_B2+E_B3
-  return(Denominador/E_P)
+  nominador<-E_B1+E_B2+E_B3
+  return(nominador/E_P)
 }
 ```
 
 ```{r}
-imod<-1-(1-0.06)/(1+0.02)
-  v<-1/(1+imod)
-  d<-1-v
-
 Base_de_datos <- Base_de_datos %>%
   rowwise() %>%
   mutate(
     Sexo=ifelse(Sexo=="F",2,1),
     inf=0,
-    imod = 1- (1 - 0.06) / (1 + inf) ,
-    v = 1 / (1 + imod),
-    d=1-v,
+    imod = 0.06, 
     E_B1 = 1 * `Suma Asegurada` * Axn(imod, Sexo, `Edad actual`, n = 49),
     E_B2 = 2 * `Suma Asegurada` * Axn(imod, Sexo, `Edad actual`, inicial = 49),
     E_B3 = 0.05 * `Suma Asegurada` * v ^ n * kpx(`Edad actual`, n, Sexo),
@@ -120,7 +133,7 @@ Base_de_datos <- Base_de_datos %>%
       corte_m = m
     ),
     crecimiento=0.02,
-    imod2 = 1- (1 - 0.06) / (1 + inf) ,
+    imod2 = 1- (1 - 0.06) / (1 + crecimiento) ,
     v2 = 1 / (1 + imod2),
     d2=1-v2,
     E_B1.2 = 1 * `Suma Asegurada` * Axn(imod2, Sexo, `Edad actual`, n = 49),
